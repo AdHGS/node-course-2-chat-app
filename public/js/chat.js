@@ -15,31 +15,53 @@ if (clientHeight + scrollTop + newMessageHeight + lastMessageHeight >= scrollHei
 }
 }
 
+
 socket.on('connect', function() {
   var params = jQuery.deparam(window.location.search);
-
   socket.emit('join', params, function(err) {
-    if (err){
-      alert(err); //bs modal / jsreact
-      window.location.href = '/';
-    }else{
-      console.log('No error');
-    }
+      if (err){
+        alert(err); //bs modal / jsreact
+        window.location.href = '/';
+      }else{
+        console.log('No error');
+      }
+    });
   });
-});
+
 
 socket.on('disconnect', function() {
   console.log('Disconnected from server!');
+
 });
 
 socket.on('updateUserList', function(users) {
 var ol = jQuery('<ol></ol>');
-
 users.forEach(function (user) {
-  ol.append(jQuery('<li></li>').text(user));
+  ol.append(jQuery('<li class="li_all" id="li_'+user+'"></li>').text(user));
   })
   jQuery('#users').html(ol);
+  });
+
+document.getElementById('messageBox').addEventListener('keyup',function(e){
+    if (e.which == 13) this.blur();
 });
+
+document.addEventListener("visibilitychange", function() {
+if (document.visibilityState == "hidden"){
+  socket.on('notification', function(){
+    // alert('jeff')
+    // console.log('jeff')
+  });
+}
+});
+
+
+  $("#messageBox").focus(function() {
+    socket.emit('isTyping')
+    });
+  $("#messageBox").focusout(function () {
+    socket.emit('notTyping')
+  });
 
 socket.on('newMessage', function(message) {
   var formattedTime = moment(message.createdAt).format('H:mm:ss a');
@@ -54,6 +76,19 @@ socket.on('newMessage', function(message) {
   scrollToBottom();
 });
 
+socket.on('isTyping', function(name) {
+  if($('#img_'+name).length){
+    $("#img_"+name).attr("src","/images/33.gif");
+    console.log('updating img')
+  }else{
+  jQuery('#li_'+name).append('<img class="img_all" id="img_'+name+'" src="/images/33.gif"/>')
+    console.log('creating img')
+  }
+})
+
+socket.on('notTyping', function(name) {
+jQuery('#img_'+name).attr('src', '');
+})
 socket.on('newLocationMessage', function(message) {
   var formattedTime = moment(message.createdAt).format('H:mm:ss a');
     var template = jQuery('#location-message-template').html();
@@ -72,7 +107,6 @@ jQuery('#message-form').on('submit', function (e) {
   var messageTextbox = jQuery('[name=message]');
 
   socket.emit('createMessage', {
-    from: 'User',
     text: messageTextbox.val()
   }, function () {
 messageTextbox.val('')
@@ -85,7 +119,6 @@ locationButton.on('click', function() {
   if (!navigator.geolocation) {
     return alert('Geolocation not supported by your browser. Please upgrade.');
   }
-
   navigator.geolocation.getCurrentPosition(function(position) {
   socket.emit('createLocationMessage', {
     latitude: position.coords.latitude,

@@ -13,7 +13,7 @@ class Users {
     if (user) {
     this.users = this.users.filter((user) => user.id !== id)
     }
-    return user;    
+    return user;
     }
   getUser (id) {
     return this.users.filter((user) => user.id === id)[0];
@@ -23,6 +23,13 @@ class Users {
     var namesArray = users.map((user) => user.name);
     return namesArray;
   }
-}
+  dupeResult(name, room){
+  var userList = this.getUserList(room);
+    return userList.filter(function(el) {
+        return el.toLowerCase().indexOf(name.toLowerCase()) > -1;
+    })
+
+    }
+  }
 
 module.exports = {Users};

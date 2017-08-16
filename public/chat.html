@@ -19,14 +19,19 @@
 <div class="chat__main" id="mainBody">
   <ol id='messages' class="chat__messages"></ol>
 
+<div class="chat__status">
+  <div id="status">
+    <p id="typingStatus"></p>
+  </div>
+</div>
   <div class="chat__footer">
-    <form id='message-form'>
-      <input name='message' type='text' placeholder='Message' autofocus autocomplete="off"/>
+    <form action="javascript:void(0);" id='message-form'>
+      <input id='messageBox' name='message' type='text' placeholder='Message'/>
     <button>Send</button>
     </form>
     <button id="send-location">Send Location</button>
   </div>
-</div>
+  </div>
 
 <script id="message-template" type="text/template">
 <li class="message">
@@ -59,6 +64,7 @@
 <script src="/js/libs/mustache.js"></script>
 <script src="/js/libs/deparam.js"></script>
 <script src="/js/chat.js"></script>
+<script src="/js/libs/ifvisible.min.js"></script>
 </body>
 
 </html>

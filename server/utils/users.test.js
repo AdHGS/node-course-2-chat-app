@@ -74,4 +74,9 @@ describe('Users', () => {
 
     expect(userList).toEqual(['Barry']);
   })
-});
+  it('should return all online users', () => {
+    var users = users.getAllUsers();
+    console.log(users)
+    expect(users).toBe(array)
+  })
+  });

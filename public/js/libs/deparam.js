@@ -4,6 +4,7 @@
  * Credits for the idea and Regex:
  * http://stevenbenner.com/2010/03/javascript-regex-trick-parse-a-query-string-into-an-object/
 */
+
 (function($){
   $.deparam = $.deparam || function(uri){
     if(uri === undefined){
@@ -17,6 +18,7 @@
         	queryString[$1] = decodeURIComponent($3.replace(/\+/g, '%20'));
         }
       );
+      
       return queryString;
     };
 })(jQuery);
